@@ -15,6 +15,7 @@ const moment = require('moment');
 const h264_sdp = require('./h264-sdp');
 const now = moment();
 const MediaController = require('./media-controller');
+const uuidv4 = require('uuid/v4')
 
 // Global stuff
 var sharedScreens = {};
@@ -44,6 +45,9 @@ module.exports = class Screenshare {
     this._vw = vw;
     this._vh = vh;
     this._candidatesQueue = [];
+
+    this._viewersEndpoint = [];
+    this._viewersCandidatesQueue = [];
   }
 
   // TODO isolate ICE
@@ -57,6 +61,88 @@ module.exports = class Screenshare {
       this._candidatesQueue.push(candidate);
     }
   };
+  
+  _onViewerIceCandidate(_candidate, viewerId) {
+    let candidate = kurento.getComplexType('IceCandidate')(_candidate);
+    
+    if (this._viewersEndpoint[viewerId]) {
+      this._viewersEndpoint[viewerId].addIceCandidate(candidate);
+    }
+    else {
+      if (!this._viewersCandidatesQueue[viewerId]) {
+        this._viewersCandidatesQueue[viewerId] = [];
+      }
+      this._viewersCandidatesQueue[viewerId].push(candidate);
+    }
+  }
+
+  _startViewer(ws, voiceBridge, sdp, presenterEndpoint, callback) {
+    let self = this;
+    let _callback = function(){};
+    let viewerId = uuidv4();
+    self._viewersCandidatesQueue[viewerId] = [];
+    ws.sendMessage({id: "viewerId", viewerId: viewerId.toString()}); // TODO string ou int?
+    
+    console.log("VIEWER ID: " + viewerId);
+    console.log("VIEWER VOICEBRIDGE:    "+self._voiceBridge);
+ 
+    MediaController.createMediaElement(voiceBridge, C.WebRTC, function(error, webRtcEndpoint) {
+      if (error) {
+        console.log("Media elements error" + error);
+        return _callback(error);
+      }
+
+      self._viewersEndpoint[viewerId] = webRtcEndpoint;
+
+      // QUEUES UP ICE CANDIDATES IF NEGOTIATION IS NOT YET READY
+      while(self._viewersCandidatesQueue[viewerId].length) {
+        let candidate = self._viewersCandidatesQueue[viewerId].shift();
+        MediaController.addIceCandidate(self._viewersEndpoint[viewerId].id, candidate);
+      }
+      // CONNECTS TWO MEDIA ELEMENTS
+      MediaController.connectMediaElements(presenterEndpoint.id, self._viewersEndpoint[viewerId].id, C.VIDEO, function(error) {
+        if (error) {
+          console.log("Media elements CONNECT error " + error);
+          //pipeline.release();
+          return _callback(error);
+        }
+      });
+
+      // ICE NEGOTIATION WITH THE ENDPOINT
+      self._viewersEndpoint[viewerId].on('OnIceCandidate', function(event) {
+        let candidate = kurento.getComplexType('IceCandidate')(event.candidate);
+        ws.sendMessage({ id : 'iceCandidate', candidate : candidate });
+      });
+
+      sdp = h264_sdp.transform(sdp);
+      // PROCESS A SDP OFFER
+      MediaController.processOffer(webRtcEndpoint.id, sdp, function(error, webRtcSdpAnswer) {
+        if (error) {
+          console.log("  [webrtc] processOffer error => " + error + " for SDP " + sdp);
+          //pipeline.release();
+          return _callback(error);
+        }
+        ws.sendMessage({id: "sdp", sdp: webRtcSdpAnswer});
+        console.log(" Sent sdp message to client with viewerId:" + viewerId);
+
+        MediaController.gatherCandidates(webRtcEndpoint.id, function(error) {
+          if (error) {
+            return _callback(error);
+          }
+
+	  self._viewersEndpoint[viewerId].on('MediaFlowInStateChange', function(event) {
+            if (event.state === 'NOT_FLOWING') {                          
+              console.log(" NOT FLOWING ");                              
+            }                                                             
+            else if (event.state === 'FLOWING') {                         
+              console.log(" FLOWING ");      
+            }                                                             
+          });
+        });
+      });
+    });
+  }
+
 
   _startPresenter(id, ws, sdpOffer, callback) {
     let self = this;
@@ -65,6 +151,7 @@ module.exports = class Screenshare {
     // Force H264 on Firefox and Chrome
     sdpOffer = h264_sdp.transform(sdpOffer);
     console.log("Starting presenter for " + sdpOffer);
+    console.log("PRESENTER VOICEBRIDGE:   " + self._voiceBridge);
     MediaController.createMediaElement(self._voiceBridge, C.WebRTC, function(error, webRtcEndpoint) {
       if (error) {
         console.log("Media elements error" + error);
