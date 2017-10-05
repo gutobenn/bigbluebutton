@@ -4,6 +4,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import VideoDock from './component';
 import VideoService from './service';
+import Auth from '/imports/ui/services/auth';
 import Users from '/imports/api/2.0/users';
 
 class VideoDockContainer extends Component {
@@ -24,4 +25,5 @@ export default createContainer(() => ({
   sendUserShareWebcam: VideoService.sendUserShareWebcam,
   sendUserUnshareWebcam: VideoService.sendUserUnshareWebcam,
   users: Users.find().fetch(),
+  meetingId: Auth.meetingID,
 }), VideoDockContainer);

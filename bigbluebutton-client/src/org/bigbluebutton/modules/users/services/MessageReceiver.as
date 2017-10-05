@@ -697,19 +697,24 @@ package org.bigbluebutton.modules.users.services
     private function handleUserBroadcastCamStartedEvtMsg(msg:Object):void {
       var userId: String = msg.body.userId as String; 
       var streamId: String = msg.body.stream as String;
-      
+      var isHtml5Client: Boolean = msg.body.isHtml5Client as Boolean;
+
       var logData:Object = UsersUtil.initLogData();
       logData.tags = ["webcam"];
       logData.message = "UserBroadcastCamStartedEvtMsg server message";
       logData.user.webcamStream = streamId;
+      logData.user.isHtml5Client = isHtml5Client;
+      logData.user.userId = userId;
       LOGGER.info(JSON.stringify(logData));
       
-      var mediaStream: MediaStream = new MediaStream(streamId, userId)
-      LiveMeeting.inst().webcams.add(mediaStream);
+      if (!isHtml5Client){
+        var mediaStream: MediaStream = new MediaStream(streamId, userId)
+        LiveMeeting.inst().webcams.add(mediaStream);
       
-      var webUser: User2x = UsersUtil.getUser(userId);
-      if (webUser != null) {
-        sendStreamStartedEvent(userId, webUser.name, streamId);
+        var webUser: User2x = UsersUtil.getUser(userId);
+        if (webUser != null) {
+          sendStreamStartedEvent(userId, webUser.name, streamId);
+	}
       }
       
     }

@@ -83,7 +83,7 @@ wss.on('connection', function(ws) {
 
         console.log('[' + message.id + '] connection ' + sessionId);
 
-        var video = new Video(ws, message.cameraId, message.cameraShared);
+        var video = new Video(ws, message.cameraId, message.cameraShared, message.meetingId);
         sessions[sessionId][message.cameraId] = video;
 
         video.start(message.sdpOffer, function(error, sdpAnswer) {

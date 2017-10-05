@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ScreenshareContainer from '/imports/ui/components/screenshare/container';
 import styles from './styles.scss';
 
 function adjustVideos(centerVideos) {
@@ -170,6 +169,7 @@ export default class VideoDock extends Component {
     const that = this;
 
     const ws = this.state.ws;
+    const { users, meetingId } = this.props;
 
     console.log(`Starting video call for video: ${id}`);
     console.log('Creating WebRtcPeer and generating local sdp offer ...');
@@ -191,7 +191,7 @@ export default class VideoDock extends Component {
     let peerObj;
     if (shareWebcam) {
       options.localVideo = videoInput;
-      peerObj = kurentoUtils.WebRtcPeer.WebRtcPeerSendonly;
+      peerObj = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv;
     } else {
       peerObj = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly;
 
@@ -221,6 +221,8 @@ export default class VideoDock extends Component {
           sdpOffer: offerSdp,
           cameraId: id,
           cameraShared: shareWebcam,
+          meetingId,
+          userId: users[0].userId
         };
         that.sendMessage(message);
       });
