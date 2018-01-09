@@ -271,9 +271,9 @@ class VideoDock extends Component {
       if (error) {
         log('error', ' WebRTC peerObj create error');
         log('error', error);
-        this.notifyError(intl.formatMessage(intlMessages.permissionError));
-        /* This notification error is displayed considering kurento-utils 
-         * returned the error 'The request is not allowed by the user agent 
+        that.notifyError(intl.formatMessage(intlMessages.permissionError));
+        /* This notification error is displayed considering kurento-utils
+         * returned the error 'The request is not allowed by the user agent
          * or the platform in the current context.', but there are other
          * errors that could be returned. */
 
