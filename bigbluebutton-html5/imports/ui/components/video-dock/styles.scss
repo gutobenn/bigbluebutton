@@ -1,16 +1,19 @@
 @import "/imports/ui/stylesheets/variables/_all";
 
 .videoDock {
+  /*
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  */
+
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-
   background-size: cover;
   background-position: center;
-  box-shadow: 0 0 5px rgba(0, 0, 0, .5);
-  border-radius: .2rem;
 }
 
 .sharedWebcamVideo {
@@ -19,4 +22,43 @@
 
 .sharedWebcamVideoLocal {
   display: normal;
+}
+
+.videoContainer {
+
+}
+
+.videoText {
+  position: absolute;
+  margin-top: -25px;
+  padding: 0 5px;
+  width: 100%;
+}
+
+.userName {
+  color: #FFFFFF;
+  background: #555;
+  padding: 3px 8px;
+  border-radius: 0.75rem;
+  font-size: 10px;
+  line-height: 13px;
+  text-align: center;
+}
+
+.pauseButton {
+  float: right;
+
+  span:last-child {
+    display: none;
+  } // TODO fix it better
+
+  span:first-child {
+    background: #D8D8D8;
+    border: 1px solid #555;
+    
+    i {
+      font-size: 11px; // TODO size should be set on button?
+      color: #555;
+    }
+  }
 }

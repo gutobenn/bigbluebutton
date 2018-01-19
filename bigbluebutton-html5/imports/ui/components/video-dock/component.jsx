@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { styles } from './styles';
 import { defineMessages, injectIntl } from 'react-intl';
+import Button from '/imports/ui/components/button/component';
 import VideoService from './service';
 import { log } from '/imports/ui/services/api';
 import { notify } from '/imports/ui/services/notification';
@@ -479,7 +480,7 @@ class VideoDock extends Component {
 
   handlePlayStart(message) {
     log('info', 'Handle play start <===================');
-
+    console.log(message);
     if (message.cameraId == this.props.userId) {
       VideoService.joinedVideo();
     }
@@ -520,11 +521,37 @@ class VideoDock extends Component {
     return (
 
       <div className={styles.videoDock}>
-        <div id="webcamArea">
+        <div id="webcamArea">/* TODO put all of this inside videoelement */
           {Object.keys(this.state.videos).map((id) => {
-            return (<VideoElement videoId={id} key={id} onMount={this.initWebRTC.bind(this)} />);
+            return (<div className={styles.videoContainer}>
+              <VideoElement videoId={id} key={id} onMount={this.initWebRTC.bind(this)} />)
+              <div className={styles.videoText}>
+                <span className={styles.userName}>Justin Hamilton</span>
+                <Button
+                  label="" /* TODO label */
+                  className={styles.pauseButton}
+                  icon={'unmute'}
+                  size={'sm'}
+                  circle
+                  onClick={null} /* TODO function. enable/disable */
+                />
+              </div>
+            </div>);
           })}
-          <video autoPlay={true} playsInline={true} muted={true} id="shareWebcamVideo" className={cssClass} ref="videoInput" />
+          <div className={styles.videoContainer}>
+            <video autoPlay={true} playsInline={true} muted={true} id="shareWebcamVideo" className={cssClass} ref="videoInput" />
+            <div className={styles.videoText}>
+              <span className={styles.userName}>Justin Hamilton</span>
+              <Button
+                label="" /* TODO label */
+                className={styles.pauseButton}
+                icon={'unmute'}
+                size={'sm'}
+                circle
+                onClick={null} /* TODO function. enable/disable */
+              />
+            </div>
+          </div>
         </div>
       </div>
     );
