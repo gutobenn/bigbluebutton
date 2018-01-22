@@ -89,6 +89,7 @@ class VideoDock extends Component {
     this.state = {
       videos: {},
       sharedWebcam : false,
+      userNames: {},
     };
 
     this.unshareWebcam = this.unshareWebcam.bind(this);
@@ -135,6 +136,9 @@ class VideoDock extends Component {
     users.forEach((user) => {
       if (user.has_stream && user.userId !== userId) {
         this.start(user.userId, false);
+      }
+      if (user.userId === userId){
+        this.myName = user.name;
       }
     })
 
@@ -249,8 +253,10 @@ class VideoDock extends Component {
     console.log(`Starting video call for video: ${id} with ${shareWebcam}`);
 
     if (shareWebcam) {
+      let userNames = this.state.userNames;
+      userNames[id] = this.myName;
       VideoService.joiningVideo();
-      this.setState({sharedWebcam: true});
+      this.setState({sharedWebcam: true, userNames: userNames});
       this.myId = id;
       this.initWebRTC(id, true);
     } else {
@@ -395,9 +401,11 @@ class VideoDock extends Component {
 
   destroyVideoTag(id) {
     let videos = this.state.videos;
+    let userNames = this.state.userNames;
 
     delete videos[id];
-    this.setState({videos: videos});
+    delete userNames[id]
+    this.setState({videos: videos, userNames: userNames})
 
     if (id == this.myId) {
       this.setState({sharedWebcam: false});
@@ -545,10 +553,10 @@ class VideoDock extends Component {
         <div id="webcamArea">
           {Object.keys(this.state.videos).map((id) => {
             return (
-              <VideoElement videoId={id} key={id} name={id} localCamera={false} onMount={this.initWebRTC.bind(this)} />
+              <VideoElement videoId={id} key={id} name={this.state.userNames[id]} localCamera={false} onMount={this.initWebRTC.bind(this)} />
             );
           })}
-          <VideoElement shared={this.state.sharedWebcam} name={this.myId} localCamera={true} />
+          <VideoElement shared={this.state.sharedWebcam} name={this.state.userNames[this.myId]} localCamera={true} />
         </div>
       </div>
     );
@@ -569,6 +577,10 @@ class VideoDock extends Component {
 
             if (nextUsers[i].has_stream) {
               if (userId !== users[i].userId) {
+                let userNames = this.state.userNames;
+                userNames[users[i].userId] = users[i].name;
+                this.setState({userNames: userNames})
+
                 this.start(users[i].userId, false);
               }
             } else {
