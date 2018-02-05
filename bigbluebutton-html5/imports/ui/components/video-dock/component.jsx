@@ -441,6 +441,7 @@ class VideoDock extends Component {
   startResponse(message) {
     const id = message.cameraId;
     const webRtcPeer = this.webRtcPeers[id];
+    const userId = this.props.userId;
 
     if (message.sdpAnswer == null) {
       return log('debug', 'Null sdp answer. Camera unplugged?');
@@ -457,7 +458,7 @@ class VideoDock extends Component {
         return log('error', error);
       }
 
-      if (message.cameraId == this.props.userId) {
+      if (id == userId) {
         log('info', "camera id sendusershare ", id);
         VideoService.sendUserShareWebcam(id);
       }
