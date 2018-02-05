@@ -9,9 +9,9 @@ let StartTranscoderRequestMessage =
 let StopTranscoderRequestMessage =
     require('./transcode/StopTranscoderRequestMessage.js')(Constants);
 let StartTranscoderSysReqMsg =
-    require('./transcode/StartTranscoderSysReqMsg.js')();
+    require('./transcode/StartTranscoderSysReqMsg.js')(Constants);
 let StopTranscoderSysReqMsg =
-    require('./transcode/StopTranscoderSysReqMsg.js')();
+    require('./transcode/StopTranscoderSysReqMsg.js')(Constants);
 let DeskShareRTMPBroadcastStartedEventMessage =
     require('./screenshare/DeskShareRTMPBroadcastStartedEventMessage.js')(Constants);
 let DeskShareRTMPBroadcastStoppedEventMessage =
@@ -31,37 +31,79 @@ function Messaging() {}
 
 Messaging.prototype.generateStartTranscoderRequestMessage =
   function(meetingId, transcoderId, params) {
-  let statrm = new StartTranscoderSysReqMsg(meetingId, transcoderId, params);
+  let statrm;
+  switch (Constants.COMMON_MESSAGE_VERSION) {
+    case "1.x":
+      statrm = new StartTranscoderRequestMessage(meetingId, transcoderId, params);
+      break;
+    default:
+      statrm = new StartTranscoderSysReqMsg(meetingId, transcoderId, params);
+  }
   return statrm.toJson();
 }
 
 Messaging.prototype.generateStopTranscoderRequestMessage =
   function(meetingId, transcoderId) {
-  let stotrm = new StopTranscoderSysReqMsg(meetingId, transcoderId);
+  let stotrm;
+  switch (Constants.COMMON_MESSAGE_VERSION) {
+    case "1.x":
+      stotrm = new StopTranscoderRequestMessage(meetingId, transcoderId);
+      break;
+    default:
+      stotrm = new StopTranscoderSysReqMsg(meetingId, transcoderId);
+  }
   return stotrm.toJson();
 }
 
 Messaging.prototype.generateDeskShareRTMPBroadcastStartedEvent =
-  function(conferenceName, streamUrl, vw, vh, timestamp) {
-  let stadrbem = new DeskShareRTMPBroadcastStartedEventMessage(conferenceName, streamUrl, vw, vh, timestamp);
+  function(meetingId, screenshareConf, streamUrl, vw, vh, timestamp) {
+  let stadrbem;
+  switch (Constants.COMMON_MESSAGE_VERSION) {
+    case "1.x":
+      stadrbem = new DeskShareRTMPBroadcastStartedEventMessage(
+          meetingId,
+          streamUrl,
+          vw,
+          vh,
+          timestamp
+      );
+      break;
+    default:
+      stadrbem = new ScreenshareRTMPBroadcastStartedEventMessage2x(
+          screenshareConf,
+          screenshareConf,
+          streamUrl,
+          vw,
+          vh,
+          timestamp
+      );
+  }
   return stadrbem.toJson();
 }
 
 Messaging.prototype.generateDeskShareRTMPBroadcastStoppedEvent =
-  function(conferenceName, streamUrl, vw, vh, timestamp) {
-  let stodrbem = new DeskShareRTMPBroadcastStoppedEventMessage(conferenceName, streamUrl, vw, vh, timestamp);
-  return stodrbem.toJson();
-}
-
-Messaging.prototype.generateScreenshareRTMPBroadcastStartedEvent2x =
-  function(conferenceName, screenshareConf, streamUrl, vw, vh, timestamp) {
-  let stadrbem = new ScreenshareRTMPBroadcastStartedEventMessage2x(conferenceName, screenshareConf, streamUrl, vw, vh, timestamp);
-  return stadrbem.toJson();
-}
-
-Messaging.prototype.generateScreenshareRTMPBroadcastStoppedEvent2x =
-  function(conferenceName, screenshareConf, streamUrl, vw, vh, timestamp) {
-  let stodrbem = new ScreenshareRTMPBroadcastStoppedEventMessage2x(conferenceName, screenshareConf, streamUrl, vw, vh, timestamp);
+  function(meetingId, screenshareConf, streamUrl, vw, vh, timestamp) {
+  let stodrbem;
+  switch (Constants.COMMON_MESSAGE_VERSION) {
+    case "1.x":
+      stodrbem = new DeskShareRTMPBroadcastStoppedEventMessage(
+          meetingId,
+          streamUrl,
+          vw,
+          vh,
+          timestamp
+      );
+      break;
+    default:
+      stodrbem = new ScreenshareRTMPBroadcastStoppedEventMessage2x(
+          screenshareConf,
+          screenshareConf,
+          streamUrl,
+          vw,
+          vh,
+          timestamp
+      );
+  }
   return stodrbem.toJson();
 }
 

@@ -1,8 +1,7 @@
 var inherits = require('inherits');
 var OutMessage2x = require('../OutMessage2x');
-var C = require('../Constants');
 
-module.exports = function() {
+module.exports = function(C) {
   function StartTranscoderSysReqMsg(meetingId, transcoderId, params) {
     StartTranscoderSysReqMsg.super_.call(this, C.START_TRANSCODER_REQ_2x,
         {sender: "kurento-screenshare"},

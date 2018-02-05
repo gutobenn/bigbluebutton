@@ -110,6 +110,7 @@ class VideoDock extends Component {
       if (user.has_stream && user.userId !== userId) {
         // FIX: Really ugly hack, but sometimes the ICE candidates aren't
         // generated properly when we send videos right after componentDidMount
+        // lfzawacki 01/17/2018
         setTimeout(() => {
           this.start(user.userId, false);
         }, INITIAL_SHARE_WAIT_TIME);
@@ -308,7 +309,9 @@ class VideoDock extends Component {
 
         that.destroyWebRTCPeer(id);
         that.destroyVideoTag(id);
-        VideoService.resetState();
+        if (shareWebcam) {
+          VideoService.resetState();
+        }
         return log('error', error);
       }
 
@@ -439,6 +442,7 @@ class VideoDock extends Component {
   }
 
   startResponse(message) {
+    const { users } = this.props;
     const id = message.cameraId;
     const webRtcPeer = this.webRtcPeers[id];
     const userId = this.props.userId;
