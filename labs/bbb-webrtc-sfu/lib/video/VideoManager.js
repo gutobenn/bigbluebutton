@@ -33,7 +33,7 @@ let _onMessage = async function (_message) {
   let iceQueues = {};
   let iceQueue;
 
-  if (typeof message.cameraId === 'undefined' || !message.cameraId) {
+  if (!message.cameraId) {
     console.log("  [VideoManager] Undefined message.cameraId for session ", sessionId);
     return;
   }
@@ -51,12 +51,11 @@ let _onMessage = async function (_message) {
       iceQueues[sessionId] = {};
   }
 
-  if (typeof sessions[sessionId][cameraId] !== 'undefined' &&  sessions[sessionId][cameraId]) {
+  if (sessions[sessionId][cameraId]) {
     video = sessions[sessionId][cameraId];
   }
 
-  if (typeof iceQueues[sessionId][cameraId] !== 'undefined' &&
-      iceQueues[sessionId][cameraId]) {
+  if (iceQueues[sessionId][cameraId]) {
     iceQueue = iceQueues[sessionId][cameraId] ;
   }
 
@@ -115,7 +114,7 @@ let _onMessage = async function (_message) {
         video.onIceCandidate(message.candidate);
       } else {
         Logger.info("[VideoManager] Queueing ice candidate for later in video", cameraId);
-        if (typeof iceQueue === 'undefined' || !iceQueue) {
+        if (!iceQueue) {
           iceQueues[sessionId][cameraId] = [];
           iceQueue = iceQueues[sessionId][cameraId];
         }
@@ -199,13 +198,14 @@ let stopAll = function() {
 }
 
 let logAvailableSessions = function() {
-  if(typeof sessions !== 'undefined' && sessions) {
+  if(sessions) {
     Logger.info("[VideoManager] Available sessions are =>");
     let sessionMainKeys = Object.keys(sessions);
     for (var k in sessions) {
-      if(typeof sessions[k] !== 'undefined' && sessions[k]) {
+      if(sessions[k]) {
         Logger.info('[VideoManager] Session[', k,'] => ', Object.keys(sessions[k]));
       }
     }
   }
+
 }
