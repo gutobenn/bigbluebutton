@@ -17,7 +17,8 @@ const config = require('config');
 
         // Redis channels
         FROM_BBB_TRANSCODE_SYSTEM_CHAN : "bigbluebutton:from-bbb-transcode:system",
-        FROM_VOICE_CONF_SYSTEM_CHAN: "from-voice-conf-redis-channel",
+        FROM_VOICE_CONF_SYSTEM_CHAN: "bigbluebutton:from-voice-conf:system",
+        FROM_VOICE_CONF_SYSTEM_CHAN_2x: "from-voice-conf-redis-channel",
         TO_BBB_TRANSCODE_SYSTEM_CHAN: "bigbluebutton:to-bbb-transcode:system",
         FROM_SCREENSHARE: config.get('from-screenshare'),
         TO_SCREENSHARE: config.get('to-screenshare'),
@@ -30,6 +31,12 @@ const config = require('config');
         REDIS_MESSAGE : "redis_message",
         WEBSOCKET_MESAGE: "ws_message",
         GATEWAY_MESSAGE: "gateway_message",
+
+        // Errors
+        MEDIA_ERROR: "MEDIA_ERROR",
+
+        // Message version
+        COMMON_MESSAGE_VERSION : config.get('common-message-version'),
 
         // Message identifiers 1x
         START_TRANSCODER_REQUEST: "start_transcoder_request_message",
@@ -54,18 +61,25 @@ const config = require('config');
         VOICE_CONF_ID : "voice_conf_id",
         TRANSCODER_ID : "transcoder_id",
 
+        // Screenshare 1x
+        CONFERENCE_NAME: "conference_name",
+        STREAM_URL: "streamname",
+        TIMESTAMP: "timestamp",
+        VIDEO_WIDTH: "vw",
+        VIDEO_HEIGHT: "vh",
+
         // Transcoder 2x
         USER_ID_2x : "userId",
         TRANSCODER_ID_2x : "transcoderId",
         MEETING_ID_2x: "meetingId",
 
         //  Screenshare 2x
-        CONFERENCE_NAME: "voiceConf",
-        SCREENSHARE_CONF: "screenshareConf",
-        STREAM_URL: "stream",
-        TIMESTAMP: "timestamp",
-        VIDEO_WIDTH: "vidWidth",
-        VIDEO_HEIGHT: "vidHeight",
+        CONFERENCE_NAME_2x: "voiceConf",
+        SCREENSHARE_CONF_2x: "screenshareConf",
+        STREAM_URL_2x: "stream",
+        TIMESTAMP_2x: "timestamp",
+        VIDEO_WIDTH_2x: "vidWidth",
+        VIDEO_HEIGHT_2x: "vidHeight",
 
         // RTP params
         MEETING_ID : "meeting_id",
@@ -98,4 +112,3 @@ const config = require('config');
 }
 
 module.exports = Constants();
-
