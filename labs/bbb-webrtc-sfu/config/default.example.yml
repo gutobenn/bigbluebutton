@@ -16,6 +16,10 @@ to-video: "to-video-sfu"
 from-audio: "from-audio-sfu"
 to-audio: "to-audio-sfu"
 
+freeswitch:
+    ip: ''
+    port: '5066'
+
 log:
     filename: '/var/log/bigbluebutton/bbb-webrtc-sfu/bbb-webrtc-sfu.log'
     level: 'verbose'
