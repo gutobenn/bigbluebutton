@@ -64,9 +64,16 @@ module.exports = class ScreenshareManager {
           break;
         }
 
-        session = new Screenshare(connectionId, this._bbbGW,
-            sessionId, connectionId, message.vh, message.vw,
-            message.internalMeetingId);
+        session = new Screenshare(
+            connectionId,
+            this._bbbGW,
+            sessionId,
+            connectionId,
+            message.vh,
+            message.vw,
+            message.internalMeetingId,
+            message.streamId
+        );
 
         this._screenshareSessions[sessionId] = {}
         this._screenshareSessions[sessionId] = session;
