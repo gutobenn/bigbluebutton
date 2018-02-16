@@ -27,9 +27,9 @@ export default class PresentationArea extends Component {
 
   componentDidMount() {
     // adding an event listener to scale the whiteboard on 'resize' events sent by chat/userlist etc
-    window.addEventListener('resize', () => {
+    /*window.addEventListener('resize', () => {
       setTimeout(this.handleResize.bind(this), 0);
-    });
+    });*/
 
     this.getInitialPresentationSizes();
   }
@@ -153,8 +153,8 @@ export default class PresentationArea extends Component {
     return (
       <div
         style={{
-          width: adjustedSizes.width,
-          height: adjustedSizes.height,
+          //width: adjustedSizes.width,
+          //height: adjustedSizes.height,
           WebkitTransition: 'width 0.2s', /* Safari */
           transition: 'width 0.2s',
         }}
