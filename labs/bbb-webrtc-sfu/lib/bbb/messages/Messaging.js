@@ -20,6 +20,14 @@ let ScreenshareRTMPBroadcastStartedEventMessage2x =
     require('./screenshare/ScreenshareRTMPBroadcastStartedEventMessage2x.js')(Constants);
 let ScreenshareRTMPBroadcastStoppedEventMessage2x =
     require('./screenshare/ScreenshareRTMPBroadcastStoppedEventMessage2x.js')(Constants);
+let UserConnectedToGlobalAudio =
+    require('./audio/UserConnectedToGlobalAudio.js')(Constants);
+let UserDisconnectedFromGlobalAudio =
+    require('./audio/UserDisconnectedFromGlobalAudio.js')(Constants);
+let UserConnectedToGlobalAudio2x =
+    require('./audio/UserConnectedToGlobalAudio2x.js')(Constants);
+let UserDisconnectedFromGlobalAudio2x =
+    require('./audio/UserDisconnectedFromGlobalAudio2x.js')(Constants);
 
 
  /**
@@ -105,6 +113,32 @@ Messaging.prototype.generateDeskShareRTMPBroadcastStoppedEvent =
       );
   }
   return stodrbem.toJson();
+}
+
+Messaging.prototype.generateUserConnectedToGlobalAudioMessage =
+  function(voiceConf, userId, name) {
+  let msg;
+  switch (Constants.COMMON_MESSAGE_VERSION) {
+    case "1.x":
+      msg = new UserConnectedToGlobalAudio(voiceConf, userId, name);
+      break;
+    default:
+      msg = new UserConnectedToGlobalAudio2x(voiceConf, userId, name);
+  }
+  return msg.toJson();
+}
+
+Messaging.prototype.generateUserDisconnectedFromGlobalAudioMessage =
+  function(voiceConf, userId, name) {
+  let msg;
+  switch (Constants.COMMON_MESSAGE_VERSION) {
+    case "1.x":
+      msg = new UserDisconnectedFromGlobalAudio(voiceConf, userId, name);
+      break;
+    default:
+      msg = new UserDisconnectedFromGlobalAudio2x(voiceConf, userId, name);
+  }
+  return msg.toJson();
 }
 
 module.exports = new Messaging();
