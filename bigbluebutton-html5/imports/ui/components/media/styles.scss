@@ -8,6 +8,10 @@
   justify-content: center;
   overflow: auto;
   order: 1;
+  flex-direction: row;
+  @include mq($portrait) {
+    flex-direction: column-reverse;
+  }
 }
 
 %ratio {
@@ -29,15 +33,15 @@
 }
 
 .overlayWrapper {
-  position: fixed;
+  //position: fixed;
   width: 100%;
-  max-width: 170px;
-  height: 96px;
-  right: 8px;
-  bottom: 8px;
+  min-width: 170px;
+  height: 100%;
+  //right: 8px;
+  //bottom: 8px;
 
   @include mq($portrait) {
-    position: absolute;
+    //position: absolute;
     width: 100%;
     max-width: none;
     height: 96px;
@@ -47,7 +51,7 @@
   }
 
   @include mq($large-up) {
-    flex-basis: 15%;
+    flex-basis: 25%;
 
   }
 }
@@ -62,8 +66,10 @@
 
 .overlayRatio {
   @extend %ratio;
+  height: 100%;
 }
 
 .overlay {
   @extend %ratio-item;
+  height: 100%;
 }

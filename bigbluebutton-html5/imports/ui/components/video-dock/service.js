@@ -78,6 +78,12 @@ class VideoService {
     return Auth.userID;
   }
 
+  isAnyoneSharingVideo() {
+    const ds = Users.findOne({"has_stream": true});
+    console.log(ds);
+    return ds ? true : false;
+  }
+
   isConnected() {
     return this.isConnected;
   }
@@ -94,6 +100,7 @@ export default {
   exitingVideo: () => videoService.exitingVideo(),
   exitedVideo: () => videoService.exitedVideo(),
   getAllUsers: () => videoService.getAllUsers(),
+  isAnyoneSharingVideo: () => videoService.isAnyoneSharingVideo(),
   isConnected: () => videoService.isConnected,
   isWaitingResponse: () => videoService.isWaitingResponse,
   joinVideo: () => videoService.joinVideo(),

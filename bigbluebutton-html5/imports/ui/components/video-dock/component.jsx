@@ -53,7 +53,7 @@ class VideoElement extends Component {
         { this.props.localCamera ?
           <video id="shareWebcam" muted autoPlay playsInline />
           :
-          <video id={`video-elem-${this.props.videoId}`} autoPlay playsInline />
+          <video id={`video-elem-${this.props.videoId}`} muted autoPlay playsInline />
         }
         <div className={styles.videoText}>
           <div className={styles.userName}>{this.props.name}</div>
@@ -150,9 +150,6 @@ class VideoDock extends Component {
     document.addEventListener('exitVideo', this.unshareWebcam.bind(this));
     document.addEventListener('installChromeExtension', this.installChromeExtension.bind(this));
 
-    window.addEventListener('resize', this.adjustVideos);
-    window.addEventListener('orientationchange', this.adjustVideos);
-
     ws.addEventListener('message', this.onWsMessage);
   }
 
@@ -175,8 +172,6 @@ class VideoDock extends Component {
     document.removeEventListener('joinVideo', this.shareWebcam);
     document.removeEventListener('exitVideo', this.unshareWebcam);
     document.removeEventListener('installChromeExtension', this.installChromeExtension);
-    window.removeEventListener('resize', this.adjustVideos);
-    window.removeEventListener('orientationchange', this.adjustVideos);
 
     this.ws.removeEventListener('message', this.onWsMessage);
     this.ws.removeEventListener('open', this.onWsOpen);
@@ -196,12 +191,6 @@ class VideoDock extends Component {
     });
     // Close websocket connection to prevent multiple reconnects from happening
     this.ws.close();
-  }
-
-  adjustVideos() {
-    setTimeout(() => {
-      window.adjustVideos('webcamArea', true, mediaStyles.moreThan4Videos, mediaStyles.container, mediaStyles.overlayWrapper, 'presentationAreaData', 'screenshareVideo');
-    }, 0);
   }
 
   onWsOpen() {
@@ -616,7 +605,6 @@ class VideoDock extends Component {
   }
 
   componentDidUpdate() {
-    this.adjustVideos();
   }
 
   render() {
