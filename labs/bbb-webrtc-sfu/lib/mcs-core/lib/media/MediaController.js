@@ -6,7 +6,6 @@ const Logger = require('../../../utils/Logger');
 // Model
 const SfuUser = require('../model/SfuUser');
 const Room = require('../model/Room.js');
-const EventEmitter = require('events').EventEmitter;
 
 /* PRIVATE ELEMENTS */
 /**
@@ -119,7 +118,7 @@ module.exports = class MediaController {
 
     let type = params.type;
     try {
-      user = this.getUserMCS(userId);
+      const user = this.getUserMCS(userId);
       let userId = user.id;
       let session = user.addSdp(params.descriptor, type, params.adapter, params.name);
       let sessionId = session.id;
