@@ -14,6 +14,7 @@ class ActionsBar extends React.PureComponent {
       handleJoinVideo,
       handleShareScreen,
       handleUnshareScreen,
+      swapLayout,
       isVideoBroadcasting,
       emojiList,
       emojiSelected,
@@ -55,7 +56,7 @@ class ActionsBar extends React.PureComponent {
             <JoinVideoOptionsContainer
               handleJoinVideo={handleJoinVideo}
               handleCloseVideo={handleExitVideo}
-            />
+              handleSwapLayout={swapLayout}            />
             : null}
           <EmojiSelect options={emojiList} selected={emojiSelected} onChange={handleEmojiChange} />
         </div>

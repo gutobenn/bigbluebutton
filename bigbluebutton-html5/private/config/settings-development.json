@@ -48,16 +48,16 @@
       },
       "allowHTML5Moderator": true,
       "allowModeratorToUnmuteAudio": true,
-      "httpsConnection": false,
+      "httpsConnection": true,
       "connectionTimeout": 60000
     },
 
     "kurento": {
-      "wsUrl": "HOST",
-      "chromeExtensionKey": "KEY",
+      "wsUrl": "wss://chimarrao/bbb-webrtc-sfu",
+      "chromeExtensionKey": "pbdiffjfhdbbehonfjgdecnkhfminipi",
       "chromeExtensionLink": "LINK",
-      "enableScreensharing": false,
-      "enableVideo": false
+      "enableScreensharing": true,
+      "enableVideo": true
     },
 
     "acl": {

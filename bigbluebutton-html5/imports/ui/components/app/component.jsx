@@ -8,6 +8,8 @@ import ToastContainer from '../toast/container';
 import ModalContainer from '../modal/container';
 import NotificationsBarContainer from '../notifications-bar/container';
 import AudioContainer from '../audio/container';
+import MediaContainer from '../media/container';
+import ActionsBarContainer from '../actions-bar/container';
 import ChatNotificationContainer from '../chat/notification/container';
 import { styles } from './styles';
 
@@ -61,7 +63,10 @@ class App extends Component {
 
     this.state = {
       compactUserList: false, // TODO: Change this on userlist resize (?)
+      isDefaultLayout: true,
     };
+
+    this.swapLayout = this.swapLayout.bind(this);
   }
 
   componentDidMount() {
@@ -148,6 +153,7 @@ class App extends Component {
 
   renderMedia() {
     const { media, intl } = this.props;
+    const { isDefaultLayout } = this.state;
 
     if (!media) return null;
 
@@ -156,7 +162,7 @@ class App extends Component {
         className={styles.media}
         aria-label={intl.formatMessage(intlMessages.mediaLabel)}
       >
-        {media}
+        <MediaContainer isDefaultLayout={isDefaultLayout} />
         {this.renderClosedCaption()}
       </section>
     );
@@ -172,7 +178,7 @@ class App extends Component {
         className={styles.actionsbar}
         aria-label={intl.formatMessage(intlMessages.actionsBarLabel)}
       >
-        {actionsbar}
+        <ActionsBarContainer swapLayout={this.swapLayout} />,
       </section>
     );
   }
@@ -199,6 +205,10 @@ class App extends Component {
         <ChatNotificationContainer currentChatID={params.chatID} />
       </main>
     );
+  }
+
+  swapLayout(){
+    this.setState({ isDefaultLayout: !this.state.isDefaultLayout });
   }
 }
 

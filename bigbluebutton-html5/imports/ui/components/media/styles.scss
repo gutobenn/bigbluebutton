@@ -50,8 +50,8 @@
     margin: 0 auto;
   }
 
-  @include mq($large-up) {
-    flex-basis: 25%;
+  @include mq($landscape) {
+    flex-basis: 20%;
 
   }
 }
@@ -72,4 +72,9 @@
 .overlay {
   @extend %ratio-item;
   height: 100%;
+}
+
+.reparentableDiv {
+  height: 100%;
+  width: 100%;
 }

@@ -28,11 +28,23 @@
   flex-direction: column;
   height: 100%;
 
+  // TODO coloquei isso 13 março pro grid, tem q ajustar outro
+  display: grid;
+  grid-template-columns: repeat(1, auto);
+  grid-template-rows: min-content;
+  grid-auto-flow: row;
+  align-content: center;
+  justify-content: center;
+
   @include mq($portrait) {
     justify-content: center;
     background: #04111F;
     flex-direction: row;
   }
+}
+
+.videoWrapper {
+  width: 100%;
 }
 
 .sharedWebcamVideo {
@@ -54,7 +66,9 @@
   width: 100%;
   background: yellow;
   position: relative;
-  max-height: 11vw; // TODO better way to fix? need to test with 16x9 cam
+  height: 0; // TODO botei essas duas linhas p grid
+  padding-bottom: 56.25%;
+  //max-height: 11vw; // TODO better way to fix? need to test with 16x9 cam DESABILITEI P QUANDO VAI PRO GRID DO MEIO. TEM Q RESOLVER ISSO DE OUTRO JEITO
 
   @include mq($portrait) {
     max-width: 170px;
@@ -89,22 +103,4 @@
   position: relative;
   display: inline-block;
   max-width: 100%;
-}
-
-.pauseButton {
-  float: right;
-
-  span:last-child {
-    display: none;
-  } // TODO fix it better
-
-  span:first-child {
-    background: #D8D8D8;
-    border: 1px solid #555;
-
-    i {
-      font-size: 11px; // TODO size should be set on button?
-      color: #555;
-    }
-  }
 }

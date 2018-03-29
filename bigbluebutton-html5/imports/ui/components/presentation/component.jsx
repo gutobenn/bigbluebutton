@@ -27,9 +27,9 @@ export default class PresentationArea extends Component {
 
   componentDidMount() {
     // adding an event listener to scale the whiteboard on 'resize' events sent by chat/userlist etc
-    /*window.addEventListener('resize', () => {
+    window.addEventListener('resize', () => {
       setTimeout(this.handleResize.bind(this), 0);
-    });*/
+    });
 
     this.getInitialPresentationSizes();
   }
@@ -99,6 +99,7 @@ export default class PresentationArea extends Component {
     let adjustedWidth;
     let adjustedHeight;
 
+    // TODO do more tests, so isn't it needed anymore?
     // Slide has a portrait orientation
     if (originalWidth <= originalHeight) {
       adjustedWidth = (presentationHeight * originalWidth) / originalHeight;
@@ -120,8 +121,8 @@ export default class PresentationArea extends Component {
       }
     }
     return {
-      width: adjustedWidth,
-      height: adjustedHeight,
+      width: presentationWidth,
+      height: presentationHeight,
     };
   }
 
@@ -275,31 +276,34 @@ export default class PresentationArea extends Component {
     return (
       <WhiteboardToolbarContainer
         whiteboardId={this.props.currentSlide.id}
-        height={adjustedSizes.height}
       />
     );
   }
 
   render() {
+    let overlayClass;
+    overlayClass = (!this.props.currentLayout) ? this.props.overlayClass : this.props.reparentableClass;
     return (
-      <div className={styles.presentationContainer} id="presentationContainer">
-        <div
-          ref={(ref) => { this.refPresentationArea = ref; }}
-          className={styles.presentationArea}
-        >
+      <div className={overlayClass}>
+        <div className={styles.presentationContainer} id="presentationContainer">
           <div
-            ref={(ref) => { this.refWhiteboardArea = ref; }}
-            className={styles.whiteboardSizeAvailable}
-          />
-          {this.state.showSlide ?
-              this.renderPresentationArea()
-            : null }
-          {this.props.userIsPresenter || this.props.multiUser ?
-              this.renderWhiteboardToolbar()
-            : null }
+            ref={(ref) => { this.refPresentationArea = ref; }}
+            className={styles.presentationArea}
+          >
+            <div
+              ref={(ref) => { this.refWhiteboardArea = ref; }}
+              className={styles.whiteboardSizeAvailable}
+            />
+            {this.state.showSlide ?
+                this.renderPresentationArea()
+              : null }
+            {this.props.userIsPresenter || this.props.multiUser ?
+                this.renderWhiteboardToolbar()
+              : null }
+          </div>
+          <PollingContainer />
+          {this.renderPresentationToolbar()}
         </div>
-        <PollingContainer />
-        {this.renderPresentationToolbar()}
       </div>
     );
   }
@@ -308,6 +312,9 @@ export default class PresentationArea extends Component {
 PresentationArea.propTypes = {
   // Defines a boolean value to detect whether a current user is a presenter
   userIsPresenter: PropTypes.bool.isRequired,
+  currentLayout: PropTypes.bool.isRequired,
+  overlayClass: PropTypes.string.isRequired,
+  reparentableClass: PropTypes.string.isRequired,
   currentSlide: PropTypes.shape({
     presentationId: PropTypes.string.isRequired,
     current: PropTypes.bool.isRequired,

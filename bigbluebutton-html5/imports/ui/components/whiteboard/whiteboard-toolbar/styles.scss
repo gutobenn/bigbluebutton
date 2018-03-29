@@ -23,6 +23,7 @@ $number-of-vertical-main-toolbar-buttons: 5;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  justify-content: flex-end; // TODO só par quando ta na lateral
   height: 100%;
   width: $toolbar-container-width;
   margin-left: $toolbar-left-margin;

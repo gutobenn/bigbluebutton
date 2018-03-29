@@ -1,6 +1,6 @@
 
 (function() {
-  function adjustVideos(tagId, centerVideos, moreThan4VideosClass, mediaContainerClass, overlayWrapperClass, presentationAreaDataId, screenshareVideoId) {
+  function adjustVideos(tagId, videoDockClass, visibleVideoClass) {
     const _minContentAspectRatio = 16 / 9.0;
 
     function calculateOccupiedArea(canvasWidth, canvasHeight, numColumns, numRows, numChildren) {
@@ -55,55 +55,19 @@
     }
 
     // http://stackoverflow.com/a/3437825/414642
-    const e = $("." + overlayWrapperClass);
+    const e = $("." + videoDockClass);
     const x = e.outerWidth() - 1;
     const y = e.outerHeight() - 1;
 
-    const videos = $("#" + tagId + " > div:visible");
-    const isPortrait = ( $(document).width() < $(document).height() );
-
-    if (isPortrait) {
-      // If currently displaying a presentation
-      if ( $("#" + presentationAreaDataId).length ) {
-        e.css({
-          "margin-top": $('#' + presentationAreaDataId).offset().top - 221,
-          "width": "calc(100% - " + $('#' + presentationAreaDataId).offset().left + ")"
-        });
-      } else if ( $("#" + screenshareVideoId).length ) { // Or if currently displaying a screenshare
-        e.css({
-          "margin-top": $('#' + screenshareVideoId).offset().top - 221,
-          "width": "calc(100% - " + $('#' + screenshareVideoId).offset().left + ")"
-        });
-      }
-    } else {
-      e.css({
-        "width": "100%",
-        "margin-top": 0
-      });
-    }
-
-    if (videos.length > 4 && !isPortrait) {
-      e.addClass(moreThan4VideosClass);
-      $("." + mediaContainerClass).css("max-width", "calc(100% - 170px)");
-    } else {
-      e.removeClass(moreThan4VideosClass);
-      $("." + mediaContainerClass).css("max-width", "100%");
-    }
+    const videos = $("#" + tagId + " ." + visibleVideoClass);
 
     const best = findBestConfiguration(x, y, videos.length);
 
-    videos.each(function (i) {
-      const row = Math.floor(i / best.numColumns);
-      const col = Math.floor(i % best.numColumns);
-
-      const top = (row > 0 && videos.length <= 4 && !isPortrait) ? 1 : 0;
-      const left = (col > 0 && videos.length <= 4 && !isPortrait) ? 1 : 0;
-
-      $(this).attr('style', `margin-top: ${top}px; margin-left: ${left}px; width: ${best.width}px; height: ${best.height}px;`);
-    });
-
-    videos.attr('width', best.width);
-    videos.attr('height', best.height);
+    $("#" + tagId).css('grid-template-columns', 'repeat(' + best.numColumns + ', ' + best.width + 'px)');
+    console.log(best);
+    $("video").trigger('play');
+    // TODO racecondition?
+    // TODO It would be better to use 'auto' as second parameter for repeat, but it doesn't work because of the videoWrapper class, added for firefox 59
   }
 
   window.adjustVideos = adjustVideos;

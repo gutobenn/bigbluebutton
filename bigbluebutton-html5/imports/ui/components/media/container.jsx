@@ -9,6 +9,7 @@ import PresentationAreaContainer from '../presentation/container';
 import VideoDockContainer from '../video-dock/container';
 import ScreenshareContainer from '../screenshare/container';
 import DefaultContent from '../presentation/default-content/component';
+import { styles } from './styles';
 
 const defaultProps = {
   overlay: null,
@@ -29,6 +30,14 @@ class MediaContainer extends Component {
     this.handleToggleLayout = this.handleToggleLayout.bind(this);
   }
 
+  componentDidMount() {
+    document.addEventListener('toggleLayout', this.handleToggleLayout); // TODO find a better way to do this
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('toggleLayout', this.handleToggleLayout);
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.current_presentation !== this.props.current_presentation) {
       if (nextProps.current_presentation) {
@@ -41,6 +50,7 @@ class MediaContainer extends Component {
 
   handleToggleLayout() {
     const { overlay, content } = this.state;
+    console.log(overlay); console.log(overlay);
 
     this.setState({ overlay: content, content: overlay });
   }
@@ -52,7 +62,7 @@ class MediaContainer extends Component {
 
 MediaContainer.defaultProps = defaultProps;
 
-export default withTracker(() => {
+export default withTracker((props) => {
   const { dataSaving } = Settings;
   const { viewParticipantsWebcams: viewVideoDock, viewScreenshare } = dataSaving;
 
@@ -65,15 +75,19 @@ export default withTracker(() => {
   data.content = <DefaultContent />;
 
   if (MediaService.shouldShowWhiteboard()) {
-    data.content = <PresentationAreaContainer />;
+    data.content = <PresentationAreaContainer key="a123" currentLayout={props.isDefaultLayout} overlayClass={styles.overlayWrapper} reparentableClass={styles.reparentableDiv} />;
   }
 
   if (MediaService.shouldShowScreenshare() && (viewScreenshare || MediaService.isUserPresenter())) {
-    data.content = <ScreenshareContainer />;
+    data.content = <ScreenshareContainer currentLayout={props.isDefaultLayout} overlayClass={styles.overlayWrapper} reparentableClass={styles.reparentableDiv} />;
   }
 
   if (MediaService.shouldShowOverlay() && viewVideoDock && !webcamOnlyModerator) {
-    data.overlay = <VideoDockContainer />;
+    data.overlay = <VideoDockContainer key="b123" currentLayout={props.isDefaultLayout} overlayClass={styles.overlayWrapper} reparentableClass={styles.reparentableDiv} />;
+  }
+
+  if(!props.isDefaultLayout){
+    data.content = [data.overlay, data.overlay=data.content][0];
   }
 
   return data;

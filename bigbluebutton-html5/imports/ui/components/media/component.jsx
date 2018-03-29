@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { styles } from './styles';
 
@@ -22,13 +23,7 @@ export default class Media extends Component {
     const { overlay } = this.props;
 
     if (overlay) {
-      return (
-        <div className={styles.overlayWrapper}>
-          <div className={styles.overlayRatio}>
-            <div className={styles.overlay}>{overlay}</div>
-          </div>
-        </div>
-      );
+      return overlay;
     }
 
     return false;

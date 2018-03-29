@@ -5,7 +5,6 @@ import VideoService from './service';
 import { log } from '/imports/ui/services/api';
 import { notify } from '/imports/ui/services/notification';
 import { toast } from 'react-toastify';
-import { styles as mediaStyles } from '/imports/ui/components/media/styles';
 import Toast from '/imports/ui/components/toast/component';
 import _ from 'lodash';
 
@@ -49,22 +48,16 @@ class VideoElement extends Component {
       cssClass = styles.sharedWebcamVideo;
     }
     return (
-      <div className={`${styles.videoContainer} ${cssClass}`} >
-        { this.props.localCamera ?
-          <video id="shareWebcam" muted autoPlay playsInline />
-          :
-          <video id={`video-elem-${this.props.videoId}`} muted autoPlay playsInline />
-        }
-        <div className={styles.videoText}>
-          <div className={styles.userName}>{this.props.name}</div>
-          {/* <Button
-            label=""
-            className={styles.pauseButton}
-            icon={'unmute'}
-            size={'sm'}
-            circle
-            onClick={() => {}}
-          /> */}
+      <div className={styles.videoWrapper}>
+        <div className={`${styles.videoContainer} ${cssClass}`} >
+          { this.props.localCamera ?
+            <video id="shareWebcam" muted autoPlay playsInline />
+            :
+            <video id={`video-elem-${this.props.videoId}`} muted autoPlay playsInline />
+          }
+          <div className={styles.videoText}>
+            <div className={styles.userName}>{this.props.name}</div>
+          </div>
         </div>
       </div>
     );
@@ -150,6 +143,9 @@ class VideoDock extends Component {
     document.addEventListener('exitVideo', this.unshareWebcam.bind(this));
     document.addEventListener('installChromeExtension', this.installChromeExtension.bind(this));
 
+    window.addEventListener('resize', this.adjustVideos);
+    window.addEventListener('orientationchange', this.adjustVideos);
+
     ws.addEventListener('message', this.onWsMessage);
   }
 
@@ -173,6 +169,9 @@ class VideoDock extends Component {
     document.removeEventListener('exitVideo', this.unshareWebcam);
     document.removeEventListener('installChromeExtension', this.installChromeExtension);
 
+    window.removeEventListener('resize', this.adjustVideos);
+    window.removeEventListener('orientationchange', this.adjustVideos);
+
     this.ws.removeEventListener('message', this.onWsMessage);
     this.ws.removeEventListener('open', this.onWsOpen);
     this.ws.removeEventListener('close', this.onWsClose);
@@ -191,6 +190,12 @@ class VideoDock extends Component {
     });
     // Close websocket connection to prevent multiple reconnects from happening
     this.ws.close();
+  }
+
+  adjustVideos() {
+    setTimeout(() => {
+      window.adjustVideos('webcamArea', styles.videoDock, styles.sharedWebcamVideoLocal);
+    }, 0);
   }
 
   onWsOpen() {
@@ -329,7 +334,7 @@ class VideoDock extends Component {
         },
         height: {
           min: 240,
-          ideal: 480,
+          ideal: 360, // TODO checar se eh isso mesmo
         },
         frameRate: {
           min: 5,
@@ -605,16 +610,21 @@ class VideoDock extends Component {
   }
 
   componentDidUpdate() {
+    this.adjustVideos();
   }
 
   render() {
+    let overlayClass;
+    overlayClass = (this.props.currentLayout) ? this.props.overlayClass : this.props.reparentableClass;
     return (
-      <div className={styles.videoDock}>
-        <div id="webcamArea" className={styles.webcamArea}>
-          {Object.keys(this.state.videos).map(id => (
-            <VideoElement videoId={id} key={id} name={this.state.userNames[id]} localCamera={false} onMount={this.initWebRTC.bind(this)} />
-            ))}
-          <VideoElement shared={this.state.sharedWebcam} name={this.state.userNames[this.myId]} localCamera />
+      <div className={overlayClass}>
+        <div className={styles.videoDock}>
+          <div id="webcamArea" className={styles.webcamArea}>
+            {Object.keys(this.state.videos).map(id => (
+              <VideoElement videoId={id} key={id} name={this.state.userNames[id]} localCamera={false} onMount={this.initWebRTC.bind(this)} />
+              ))}
+            <VideoElement shared={this.state.sharedWebcam} name={this.state.userNames[this.myId]} localCamera />
+          </div>
         </div>
       </div>
     );

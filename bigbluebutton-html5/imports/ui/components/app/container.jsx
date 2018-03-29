@@ -32,8 +32,8 @@ const propTypes = {
 
 const defaultProps = {
   navbar: <NavBarContainer />,
-  actionsbar: <ActionsBarContainer />,
-  media: <MediaContainer />,
+  actionsbar: <ActionsBarContainer swapLayout={null}/>,
+  media: <MediaContainer currentLayout='normal'/>,
 };
 
 const intlMessages = defineMessages({
@@ -49,6 +49,7 @@ const AppContainer = (props) => {
     navbar,
     actionsbar,
     media,
+    layout,
     ...otherProps
   } = props;
 
@@ -59,6 +60,7 @@ const AppContainer = (props) => {
       navbar={navbarWithLocation}
       actionsbar={actionsbar}
       media={media}
+      layout={layout}
       {...otherProps}
     />
   );
