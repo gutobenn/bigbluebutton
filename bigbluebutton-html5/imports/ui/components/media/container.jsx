@@ -11,6 +11,7 @@ import PresentationAreaContainer from '../presentation/container';
 import VideoProviderContainer from '../video-provider/container';
 import ScreenshareContainer from '../screenshare/container';
 import DefaultContent from '../presentation/default-content/component';
+import { styles } from './styles';
 
 const defaultProps = {
   overlay: null,
@@ -78,7 +79,7 @@ class MediaContainer extends Component {
 
 MediaContainer.defaultProps = defaultProps;
 
-export default withTracker(() => {
+export default withTracker((props) => {
   const { dataSaving } = Settings;
   const { viewParticipantsWebcams, viewScreenshare } = dataSaving;
 
@@ -91,18 +92,22 @@ export default withTracker(() => {
   data.content = <DefaultContent />;
 
   if (MediaService.shouldShowWhiteboard()) {
-    data.content = <PresentationAreaContainer />;
+    data.content = <PresentationAreaContainer key="presentationAreaContainer" defaultLayout={props.defaultLayout} overlayClass={styles.overlayWrapper} />;
   }
 
   if (MediaService.shouldShowScreenshare() && (viewScreenshare || MediaService.isUserPresenter())) {
-    data.content = <ScreenshareContainer />;
+    data.content = <ScreenshareContainer key="screenshareContainer" defaultLayout={props.defaultLayout} overlayClass={styles.overlayWrapper} />;
   }
 
   if (MediaService.shouldShowOverlay() && viewParticipantsWebcams && !webcamOnlyModerator) {
-    data.overlay = <VideoProviderContainer />;
+    data.overlay = <VideoProviderContainer key="videoProviderContainer" defaultLayout={props.defaultLayout} overlayClass={styles.overlayWrapper} />;
   }
 
   data.isScreensharing = MediaService.isVideoBroadcasting();
+
+  if (!props.defaultLayout) {
+    data.content = [data.overlay, data.overlay=data.content][0];
+  }
 
   return data;
 })(injectIntl(MediaContainer));

@@ -437,6 +437,8 @@ class VideoProvider extends Component {
         sharedWebcam={this.state.sharedWebcam}
         onShareWebcam={this.shareWebcam.bind(this)}
         socketOpen={this.state.socketOpen}
+        defaultLayout={this.props.defaultLayout}
+        overlayClass={this.props.overlayClass}
         isLocked={this.props.isLocked}
       />
     );

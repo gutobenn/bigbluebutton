@@ -14,6 +14,7 @@ class ActionsBar extends React.PureComponent {
       handleJoinVideo,
       handleShareScreen,
       handleUnshareScreen,
+      handleSwapLayout,
       isVideoBroadcasting,
       emojiList,
       emojiSelected,
@@ -53,6 +54,7 @@ class ActionsBar extends React.PureComponent {
           <AudioControlsContainer />
           {Meteor.settings.public.kurento.enableVideo ?
             <JoinVideoOptionsContainer
+              handleSwapLayout={handleSwapLayout}
               handleJoinVideo={handleJoinVideo}
               handleCloseVideo={handleExitVideo}
             />

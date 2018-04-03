@@ -29,6 +29,7 @@ const JoinVideoOptionsContainer = (props) => {
     isDisabled,
     handleJoinVideo,
     handleCloseVideo,
+    handleSwapLayout,
     baseName,
     intl,
     ...restProps
@@ -40,7 +41,7 @@ const JoinVideoOptionsContainer = (props) => {
       description: intl.formatMessage(intlMessages.swapCamDesc),
       label: intl.formatMessage(intlMessages.swapCam),
       disabled: false,
-      click: () => {},
+      click: handleSwapLayout,
     },
     {
       iconPath: `${baseName}/resources/images/video-menu/icon-webcam-off.svg`,

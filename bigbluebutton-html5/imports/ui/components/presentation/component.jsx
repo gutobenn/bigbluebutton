@@ -9,6 +9,7 @@ import AnnotationGroupContainer from '../whiteboard/annotation-group/container';
 import PresentationToolbarContainer from './presentation-toolbar/container';
 import PresentationOverlayContainer from './presentation-overlay/container';
 import Slide from './slide/component';
+import cx from 'classnames';
 import { styles } from './styles.scss';
 
 
@@ -27,9 +28,9 @@ export default class PresentationArea extends Component {
 
   componentDidMount() {
     // adding an event listener to scale the whiteboard on 'resize' events sent by chat/userlist etc
-    window.addEventListener('resize', () => {
+    /*window.addEventListener('resize', () => {
       setTimeout(this.handleResize.bind(this), 0);
-    });
+    });*/
 
     this.getInitialPresentationSizes();
   }
@@ -120,8 +121,8 @@ export default class PresentationArea extends Component {
       }
     }
     return {
-      width: adjustedWidth,
-      height: adjustedHeight,
+      width: presentationWidth, // TODO is it right? if it is, the algorithm above isn't needed?
+      height: presentationHeight,
     };
   }
 
@@ -153,10 +154,11 @@ export default class PresentationArea extends Component {
     return (
       <div
         style={{
-          width: adjustedSizes.width,
-          height: adjustedSizes.height,
+          //width: adjustedSizes.width,
+          //height: adjustedSizes.height,
           WebkitTransition: 'width 0.2s', /* Safari */
           transition: 'width 0.2s',
+          //height: '100%',
         }}
         id="presentationAreaData"
       >
@@ -275,31 +277,36 @@ export default class PresentationArea extends Component {
     return (
       <WhiteboardToolbarContainer
         whiteboardId={this.props.currentSlide.id}
-        height={adjustedSizes.height}
       />
     );
   }
 
   render() {
     return (
-      <div className={styles.presentationContainer} id="presentationContainer">
-        <div
-          ref={(ref) => { this.refPresentationArea = ref; }}
-          className={styles.presentationArea}
-        >
+      <div className={cx({
+        [this.props.overlayClass]: !this.props.defaultLayout,
+        [styles.reparentableDiv]: this.props.defaultLayout})}>
+        <div className={styles.presentationContainer} id="presentationContainer">
           <div
-            ref={(ref) => { this.refWhiteboardArea = ref; }}
-            className={styles.whiteboardSizeAvailable}
-          />
-          {this.state.showSlide ?
-              this.renderPresentationArea()
-            : null }
-          {this.props.userIsPresenter || this.props.multiUser ?
-              this.renderWhiteboardToolbar()
-            : null }
+            ref={(ref) => { this.refPresentationArea = ref; }}
+            className={cx({
+            [styles.presentationArea]: true,
+            [styles.presentationAreaSwappedLayout]: !this.props.defaultLayout})}>
+          >
+            <div
+              ref={(ref) => { this.refWhiteboardArea = ref; }}
+              className={styles.whiteboardSizeAvailable}
+            />
+            {this.state.showSlide ?
+                this.renderPresentationArea()
+              : null }
+            {this.props.userIsPresenter || this.props.multiUser ?
+                this.renderWhiteboardToolbar()
+              : null }
+          </div>
+          <PollingContainer />
+          {this.renderPresentationToolbar()}
         </div>
-        <PollingContainer />
-        {this.renderPresentationToolbar()}
       </div>
     );
   }
@@ -329,6 +336,8 @@ PresentationArea.propTypes = {
   }),
   // current multi-user status
   multiUser: PropTypes.bool.isRequired,
+  defaultLayout: PropTypes.bool.isRequired,
+  overlayClass: PropTypes.string.isRequired,
 };
 
 PresentationArea.defaultProps = {

@@ -8,6 +8,8 @@ import ToastContainer from '../toast/container';
 import ModalContainer from '../modal/container';
 import NotificationsBarContainer from '../notifications-bar/container';
 import AudioContainer from '../audio/container';
+import MediaContainer from '../media/container';
+import ActionsBarContainer from '../actions-bar/container';
 import ChatNotificationContainer from '../chat/notification/container';
 import { styles } from './styles';
 
@@ -61,7 +63,10 @@ class App extends Component {
 
     this.state = {
       compactUserList: false, // TODO: Change this on userlist resize (?)
+      defaultLayout: true,
     };
+
+    this.handleSwapLayout = this.handleSwapLayout.bind(this);
   }
 
   componentDidMount() {
@@ -148,6 +153,7 @@ class App extends Component {
 
   renderMedia() {
     const { media, intl } = this.props;
+    const { defaultLayout } = this.state;
 
     if (!media) return null;
 
@@ -156,7 +162,8 @@ class App extends Component {
         className={styles.media}
         aria-label={intl.formatMessage(intlMessages.mediaLabel)}
       >
-        {media}
+        <MediaContainer defaultLayout={defaultLayout} />
+        {/* TODO is it possible to keep using the media variable and pass the defaultLayout to it? */}
         {this.renderClosedCaption()}
       </section>
     );
@@ -164,6 +171,7 @@ class App extends Component {
 
   renderActionsBar() {
     const { actionsbar, intl } = this.props;
+    const { defaultLayout } = this.state;
 
     if (!actionsbar) return null;
 
@@ -172,7 +180,8 @@ class App extends Component {
         className={styles.actionsbar}
         aria-label={intl.formatMessage(intlMessages.actionsBarLabel)}
       >
-        {actionsbar}
+        <ActionsBarContainer handleSwapLayout={this.handleSwapLayout} />
+        {/* TODO is it possible to keep using the actionsbar variable and pass the handleSwaplayout to it? */}
       </section>
     );
   }
@@ -199,6 +208,10 @@ class App extends Component {
         <ChatNotificationContainer currentChatID={params.chatID} />
       </main>
     );
+  }
+
+  handleSwapLayout() {
+    this.setState({ defaultLayout: !this.state.defaultLayout });
   }
 }
 

@@ -11,14 +11,16 @@ class VideoElement extends Component {
     const tagId = this.props.localCamera ? 'shareWebcam' : `video-elem-${this.props.videoId}`;
 
     return (
-      <div className={cx({
-        [styles.videoContainer]: true,
-        [styles.sharedWebcamVideo]: !this.props.shared && this.props.localCamera,
-        [styles.sharedWebcamVideoLocal]: this.props.shared || !this.props.localCamera })}>
+      <div className={styles.videoWrapper}>
+        <div className={cx({
+          [styles.videoContainer]: true,
+          [styles.sharedWebcamVideo]: !this.props.shared && this.props.localCamera,
+          [styles.sharedWebcamVideoLocal]: this.props.shared || !this.props.localCamera })}>
 
-        <video id={tagId} muted={this.props.localCamera} autoPlay playsInline />
-        <div className={styles.videoText}>
-          <div className={styles.userName}>{this.props.name}</div>
+          <video id={tagId} muted={this.props.localCamera} muted autoPlay playsInline />
+          <div className={styles.videoText}>
+            <div className={styles.userName}>{this.props.name}</div>
+          </div>
         </div>
       </div>
     );
@@ -49,16 +51,29 @@ class VideoElement extends Component {
     let videoConstraints = {
       width: {
         min: 320,
-        max: 640,
+        ideal: 640,
       },
       height: {
         min: 240,
-        max: 480,
+        ideal: 360,
+      },
+      frameRate:{
+        min: 5,
+        ideal: 10,
       },
     };
 
-    if (!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)) {
-      videoConstraints.frameRate = { min: 5, ideal: 10, };
+    if (navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)) {
+      videoConstraints = {
+        width: {
+          min: 320,
+          max: 640,
+        },
+        height: {
+          min: 240,
+          max: 480,
+        },
+      };
     }
 
     return videoConstraints;

@@ -6,6 +6,7 @@ import { notify } from '/imports/ui/services/notification';
 import { toast } from 'react-toastify';
 import { styles as mediaStyles } from '/imports/ui/components/media/styles';
 import Toast from '/imports/ui/components/toast/component';
+import cx from 'classnames';
 import _ from 'lodash';
 
 import VideoElement from '../video-element/component';
@@ -68,7 +69,7 @@ class VideoDock extends Component {
   // Find a better place to put this piece of code
   adjustVideos() {
     setTimeout(() => {
-      window.adjustVideos('webcamArea', true, mediaStyles.moreThan4Videos, mediaStyles.container, mediaStyles.overlayWrapper, 'presentationAreaData', 'screenshareVideo');
+      window.adjustVideos('webcamArea', styles.videoDock, styles.sharedWebcamVideoLocal);
     }, 0);
   }
 
@@ -80,22 +81,28 @@ class VideoDock extends Component {
 
     const id = this.props.userId;
     const sharedWebcam = this.props.sharedWebcam;
-
+    console.log(this.props.users);
     return (
-      <div className={styles.videoDock} id={this.props.sharedWebcam.toString()}>
-        <div id="webcamArea" className={styles.webcamArea}>
-          {this.props.users.map(user => (
-            <VideoElement
-              shared={id === user.userId && sharedWebcam}
-              videoId={user.userId}
-              key={user.userId}
-              name={user.name}
-              localCamera={id === user.userId}
-              onShareWebcam={this.props.onShareWebcam.bind(this)}
-              onMount={this.props.onStart.bind(this)}
-              onUnmount={this.props.onStop.bind(this)}
-            />
-          ))}
+      <div className={cx({
+        [this.props.overlayClass]: this.props.defaultLayout && this.props.users.length,
+        [styles.reparentableDiv]: !this.props.defaultLayout})}>
+        <div className={styles.videoDock}>
+          <div id="webcamArea" className={cx({
+            [styles.webcamArea]: true,
+            [styles.webcamAreaSwappedLayout]: !this.props.defaultLayout})}>
+            {this.props.users.map(user => (
+              <VideoElement
+                shared={id === user.userId && sharedWebcam}
+                videoId={user.userId}
+                key={user.userId}
+                name={user.name}
+                localCamera={id === user.userId}
+                onShareWebcam={this.props.onShareWebcam.bind(this)}
+                onMount={this.props.onStart.bind(this)}
+                onUnmount={this.props.onStop.bind(this)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     );
