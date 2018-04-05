@@ -31,8 +31,8 @@
 .overlayWrapper {
   position: fixed;
   width: 100%;
-  max-width: 330px;
-  height: 185px;
+  max-width: 320px;
+  height: 180px;
   right: 8px;
   bottom: 8px;
 
@@ -53,17 +53,19 @@
 }
 
 .moreThan4Videos{
-  top: 63px;
+  bottom: 0;
   right: 0;
   position: fixed;
-  height: calc(100% - 143px);
+  height: calc(100% - 63px);
   text-align: right;
 }
 
 .overlayRatio {
   @extend %ratio;
+  height: 100%;
 }
 
 .overlay {
   @extend %ratio-item;
+  height: 100%;
 }

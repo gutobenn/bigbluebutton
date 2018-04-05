@@ -82,9 +82,9 @@
       });
     }
 
-    if (videos.length > 4 && !isPortrait) {
+    if (videos.length > 0 && !isPortrait) {
       e.addClass(moreThan4VideosClass);
-      $("." + mediaContainerClass).css("max-width", "calc(100% - 170px)");
+      $("." + mediaContainerClass).css("max-width", "calc(100% - 320px)");
     } else {
       e.removeClass(moreThan4VideosClass);
       $("." + mediaContainerClass).css("max-width", "100%");
@@ -99,7 +99,7 @@
       const top = (row > 0 && videos.length <= 4 && !isPortrait) ? 1 : 0;
       const left = (col > 0 && videos.length <= 4 && !isPortrait) ? 1 : 0;
 
-      $(this).attr('style', `margin-top: ${top}px; margin-left: ${left}px; width: ${best.width}px; height: ${best.height}px;`);
+      $(this).attr('style', `width: ${best.width}px; height: ${best.height}px;`);
     });
 
     videos.attr('width', best.width);
