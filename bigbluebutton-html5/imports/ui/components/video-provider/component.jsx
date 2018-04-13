@@ -49,6 +49,7 @@ class VideoProvider extends Component {
     this.onWsClose = this.onWsClose.bind(this);
     this.onWsMessage = this.onWsMessage.bind(this);
 
+    this.openWs = this.ws.open.bind(this.ws);
     this.unshareWebcam = this.unshareWebcam.bind(this);
     this.shareWebcam = this.shareWebcam.bind(this);
   }
@@ -57,13 +58,13 @@ class VideoProvider extends Component {
     this.ws.addEventListener('open', this.onWsOpen);
     this.ws.addEventListener('close', this.onWsClose);
 
-    window.addEventListener('online', this.ws.open.bind(this.ws));
+    window.addEventListener('online', this.openWs);
     window.addEventListener('offline', this.onWsClose);
   }
 
   componentDidMount() {
-    document.addEventListener('joinVideo', this.shareWebcam.bind(this)); // TODO find a better way to do this
-    document.addEventListener('exitVideo', this.unshareWebcam.bind(this));
+    document.addEventListener('joinVideo', this.shareWebcam); // TODO find a better way to do this
+    document.addEventListener('exitVideo', this.unshareWebcam);
 
     this.ws.addEventListener('message', this.onWsMessage);
   }
@@ -95,7 +96,7 @@ class VideoProvider extends Component {
     this.ws.removeEventListener('open', this.onWsOpen);
     this.ws.removeEventListener('close', this.onWsClose);
 
-    window.removeEventListener('online', this.ws.open.bind(this.ws));
+    window.removeEventListener('online', this.openWs);
     window.removeEventListener('offline', this.onWsClose);
 
     // Unshare user webcam
