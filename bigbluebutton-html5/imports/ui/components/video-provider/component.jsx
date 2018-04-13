@@ -23,14 +23,6 @@ const intlMessages = defineMessages({
     id: 'app.video.sharingError',
     description: 'Error on sharing webcam',
   },
-  chromeExtensionError: {
-    id: 'app.video.chromeExtensionError',
-    description: 'Error message for Chrome Extension not installed',
-  },
-  chromeExtensionErrorLink: {
-    id: 'app.video.chromeExtensionErrorLink',
-    description: 'Error message for Chrome Extension not installed',
-  },
 });
 
 const RECONNECT_WAIT_TIME = 5000;
