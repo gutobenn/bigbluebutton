@@ -304,6 +304,7 @@
     "app.video.videoMenuDesc": "Open video menu dropdown",
     "app.video.chromeExtensionError": "You must install",
     "app.video.chromeExtensionErrorLink": "this Chrome Extension",
+    "app.video.safariScreenshareNotSupportedError": "Screenshare is currently not supported by Safari",
     "app.meeting.endNotification.ok.label": "OK",
     "app.whiteboard.toolbar.tools": "Tools",
     "app.whiteboard.toolbar.tools.hand": "Hand",

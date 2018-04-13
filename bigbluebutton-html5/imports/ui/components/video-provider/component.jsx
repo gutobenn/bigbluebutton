@@ -23,6 +23,18 @@ const intlMessages = defineMessages({
     id: 'app.video.sharingError',
     description: 'Error on sharing webcam',
   },
+  chromeExtensionError: {
+    id: 'app.video.chromeExtensionError',
+    description: 'Error message for Chrome Extension not installed',
+  },
+  chromeExtensionErrorLink: {
+    id: 'app.video.chromeExtensionErrorLink',
+    description: 'Error message for Chrome Extension not installed',
+  },
+  safariScreenshareNotSupportedError: {
+    id: 'app.video.safariScreenshareNotSupportedError',
+    description: 'Error message for screenshare on Safari, still not supported.',
+  },
 });
 
 const RECONNECT_WAIT_TIME = 5000;
@@ -52,6 +64,9 @@ class VideoProvider extends Component {
     this.openWs = this.ws.open.bind(this.ws);
     this.unshareWebcam = this.unshareWebcam.bind(this);
     this.shareWebcam = this.shareWebcam.bind(this);
+    
+    this.installChromeExtension = this.installChromeExtension.bind(this);
+    this.safariScreenshareNotSupported = this.safariScreenshareNotSupported.bind(this);
   }
 
   componentWillMount() {
@@ -65,6 +80,9 @@ class VideoProvider extends Component {
   componentDidMount() {
     document.addEventListener('joinVideo', this.shareWebcam); // TODO find a better way to do this
     document.addEventListener('exitVideo', this.unshareWebcam);
+    
+    document.addEventListener('installChromeExtension', this.installChromeExtension);
+    document.addEventListener('safariScreenshareNotSupported', this.safariScreenshareNotSupported);
 
     this.ws.addEventListener('message', this.onWsMessage);
   }
@@ -91,6 +109,8 @@ class VideoProvider extends Component {
   componentWillUnmount() {
     document.removeEventListener('joinVideo', this.shareWebcam);
     document.removeEventListener('exitVideo', this.unshareWebcam);
+    document.removeEventListener('installChromeExtension', this.installChromeExtension);
+    document.removeEventListener('safariScreenshareNotSupported', this.safariScreenshareNotSupported);
 
     this.ws.removeEventListener('message', this.onWsMessage);
     this.ws.removeEventListener('open', this.onWsOpen);
@@ -441,6 +461,25 @@ class VideoProvider extends Component {
 
   notifyError(message) {
     notify(message, 'error', 'video');
+  }
+
+  installChromeExtension() {
+    console.log(intlMessages);
+    const { intl } = this.props;
+    const CHROME_EXTENSION_LINK = Meteor.settings.public.kurento.chromeExtensionLink;
+
+    this.notifyError(<div>
+      {intl.formatMessage(intlMessages.chromeExtensionError)}{' '}
+      <a href={CHROME_EXTENSION_LINK} target="_blank">
+        {intl.formatMessage(intlMessages.chromeExtensionErrorLink)}
+      </a>
+    </div>);
+  }
+
+  safariScreenshareNotSupported() {
+    const { intl } = this.props;
+
+    this.notifyError(intl.formatMessage(intlMessages.safariScreenshareNotSupportedError));
   }
 
   shareWebcam() {
