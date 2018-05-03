@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import VideoProviderContainer from '/imports/ui/components/video-provider/container';
 import PollingContainer from '/imports/ui/components/polling/container';
+import TourOverlay from './tour/component';
 
 import { styles } from './styles';
 
@@ -47,6 +48,7 @@ export default class Media extends Component {
           { !disableVideo ? <VideoProviderContainer /> : null }
         </div>
         <PollingContainer />
+        <TourOverlay />
       </div>
     );
   }
