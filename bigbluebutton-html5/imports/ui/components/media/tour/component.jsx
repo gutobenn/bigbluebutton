@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { injectIntl, intlShape, defineMessages } from 'react-intl';
 import Button from '/imports/ui/components/button/component';
+import TourService from './service';
 import cx from 'classnames';
 import { styles } from './styles';
 
@@ -41,6 +42,10 @@ const intlMessages = defineMessages({
     id: 'app.media.tour.gotIt',
     description: 'Message for Got It button',
   },
+  tourSkip: {
+    id: 'app.media.tour.skip',
+    description: 'Message for Skip link',
+  },
 });
 
 const slides = [
@@ -56,34 +61,48 @@ const slides = [
     title: intlMessages.stepSettingsTitle,
     content: intlMessages.stepSettingsContent,
     style: styles.stepSettings,
-  }, {
-    title: intlMessages.stepScreenshareTitle,
-    content: intlMessages.stepScreenshareContent,
-    style: styles.stepScreenshare,
   }
 ];
+
 
 class TourOverlay extends Component {
   constructor(props) {
     super(props);
     
     this.state = {
-      activeSlide: 0
+      display: true,
+      currentStep: 0
     };
   }
 
-  nextSlide() {
+  componentDidMount() {
+    if (TourService.isPresenter()) { // TODO create a container with withtracker passing isPresenter as a prop to this component?
+      slides.push({
+        title: intlMessages.stepScreenshareTitle,
+        content: intlMessages.stepScreenshareContent,
+        style: styles.stepScreenshare,
+      });
+    }
+  }
+
+  nextStep() {
     let slidesLength = slides.length - 1;
-    let index = this.state.activeSlide;
+    let index = this.state.currentStep;
 
     if (index === slidesLength) {
-      index = -1;
+      this.skipTour();
     }
 
     ++index;
 
     this.setState({
-      activeSlide: index
+      currentStep: index
+    });
+  }
+
+  skipTour() {
+    this.setState({
+      display: false
     });
   }
 
@@ -93,17 +112,20 @@ class TourOverlay extends Component {
     } = this.props;
 
     return (
-      <div className={styles.overlay}>
-        <div className={cx(slides[this.state.activeSlide].style, styles.hint)}>
-          <div className={styles.hintTitle}>{ intl.formatMessage(slides[this.state.activeSlide].title) }</div>
-          <div className={styles.hintContent}>{ intl.formatMessage(slides[this.state.activeSlide].content) }</div><br />
-          <Button
-            onClick={() => this.nextSlide()}
-            label={ intl.formatMessage(intlMessages.tourGotIt) }
-            size="sm"
-          />
+      this.state.display && (
+        <div className={styles.overlay}>
+          <div className={cx(slides[this.state.currentStep].style, styles.hint)}>
+            <div className={styles.hintTitle}>{ intl.formatMessage(slides[this.state.currentStep].title) }</div>
+            <div className={styles.hintContent}>{ intl.formatMessage(slides[this.state.currentStep].content) }</div><br />
+            <a className={styles.skipLink} onClick={() => this.skipTour()}>{ intl.formatMessage(intlMessages.tourSkip) }</a>
+            <Button
+              onClick={() => this.nextStep()}
+              label={ intl.formatMessage(intlMessages.tourGotIt) }
+              size="sm"
+            />
+          </div>
         </div>
-      </div>
+      )
     );
   }
 }
